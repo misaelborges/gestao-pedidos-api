@@ -47,4 +47,10 @@ public class ClienteController {
         ClienteResponseDTO clienteResponseDTO = clienteService.atualizarClientePorId(id, clienteAtualizaRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarClientePorId(@PathVariable Long id) {
+        clienteService.deletarClientePorId(id);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 }
