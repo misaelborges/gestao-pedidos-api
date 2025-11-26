@@ -1,5 +1,6 @@
 package com.datum.gestao.pedidos.domain.service;
 
+import com.datum.gestao.pedidos.api.dto.cliente.ClienteRequestDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResponseDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResumoResponseDTO;
 import com.datum.gestao.pedidos.core.mapper.ClienteMapper;
@@ -33,6 +34,13 @@ public class ClienteService {
     public ClienteResponseDTO buscarClientePorId(Long id) {
         Cliente cliente = buscadorClinte(id);
         return clienteMapper.toClienteResponseDTO(cliente);
+    }
+
+    public ClienteResponseDTO salvarCliente(ClienteRequestDTO clienteRequestDTO) {
+        Cliente cliente = clienteMapper.toCliente(clienteRequestDTO);
+        cliente.setAtivo(true);
+        Cliente clienteSalvo = clienteRepository.save(cliente);
+        return clienteMapper.toClienteResponseDTO(clienteSalvo);
     }
 
     private Cliente buscadorClinte(Long id) {
