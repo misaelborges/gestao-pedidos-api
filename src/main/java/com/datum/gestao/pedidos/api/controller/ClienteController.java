@@ -1,5 +1,6 @@
 package com.datum.gestao.pedidos.api.controller;
 
+import com.datum.gestao.pedidos.api.dto.cliente.ClienteAtualizaRequestDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteRequestDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResponseDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResumoResponseDTO;
@@ -37,5 +38,13 @@ public class ClienteController {
     public ResponseEntity<ClienteResponseDTO> salvarCliente(@RequestBody @Valid ClienteRequestDTO clienteRequestDTO) {
         ClienteResponseDTO clienteResponseDTO = clienteService.salvarCliente(clienteRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponseDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> atualizarClientePorId(
+                       @PathVariable Long id, @RequestBody @Valid ClienteAtualizaRequestDTO clienteAtualizaRequestDTO) {
+
+        ClienteResponseDTO clienteResponseDTO = clienteService.atualizarClientePorId(id, clienteAtualizaRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);
     }
 }
