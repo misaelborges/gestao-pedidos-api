@@ -1,7 +1,9 @@
 package com.datum.gestao.pedidos.domain.service;
 
+import com.datum.gestao.pedidos.api.dto.cliente.ClienteResponseDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResumoResponseDTO;
 import com.datum.gestao.pedidos.core.mapper.ClienteMapper;
+import com.datum.gestao.pedidos.domain.exception.ClienteNaoEncontradoException;
 import com.datum.gestao.pedidos.domain.model.Cliente;
 import com.datum.gestao.pedidos.domain.repository.ClienteRepository;
 import org.springframework.data.domain.Page;
@@ -26,5 +28,14 @@ public class ClienteService {
         Page<Cliente> clientes = clienteRepository.findAll(pageable);
         List<ClienteResumoResponseDTO> dtos = clienteMapper.toClienteResumoDTO(clientes.getContent());
         return new PageImpl<>(dtos, pageable, clientes.getTotalElements());
+    }
+
+    public ClienteResponseDTO buscarClientePorId(Long id) {
+        Cliente cliente = buscadorClinte(id);
+        return clienteMapper.toClienteResponseDTO(cliente);
+    }
+
+    private Cliente buscadorClinte(Long id) {
+        return clienteRepository.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException(id));
     }
 }
