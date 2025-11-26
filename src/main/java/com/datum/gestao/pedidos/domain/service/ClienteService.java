@@ -28,7 +28,7 @@ public class ClienteService {
     }
 
     public Page<ClienteResumoResponseDTO> listarClientes(Pageable pageable) {
-        Page<Cliente> clientes = clienteRepository.findAll(pageable);
+        Page<Cliente> clientes = clienteRepository.findAllClienteByAtivoTrue(pageable);
         List<ClienteResumoResponseDTO> dtos = clienteMapper.toClienteResumoDTO(clientes.getContent());
         return new PageImpl<>(dtos, pageable, clientes.getTotalElements());
     }
