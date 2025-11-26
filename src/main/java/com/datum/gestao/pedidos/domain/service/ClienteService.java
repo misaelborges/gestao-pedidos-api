@@ -32,7 +32,7 @@ public class ClienteService {
     }
 
     public ClienteResponseDTO buscarClientePorId(Long id) {
-        Cliente cliente = buscadorClinte(id);
+        Cliente cliente = buscarCliente(id);
         return clienteMapper.toClienteResponseDTO(cliente);
     }
 
@@ -44,6 +44,7 @@ public class ClienteService {
     }
 
     private Cliente buscadorClinte(Long id) {
+    private Cliente buscarCliente(Long id) {
         return clienteRepository.findById(id).orElseThrow(() -> new ClienteNaoEncontradoException(id));
     }
 }
