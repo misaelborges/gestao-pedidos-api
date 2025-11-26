@@ -54,6 +54,12 @@ public class ClienteService {
         return clienteMapper.toClienteResponseDTO(clienteBanco);
     }
 
+    @Transactional
+    public void deletarClientePorId(Long id) {
+        Cliente cliente = buscarCliente(id);
+        cliente.setAtivo(false);
+    }
+
     private void atualizarCliente(ClienteAtualizaRequestDTO clienteAtualizaRequestDTO, Cliente clienteBanco) {
         clienteBanco.setNome(clienteAtualizaRequestDTO.nome());
         clienteBanco.setTelefone(clienteAtualizaRequestDTO.telefone());
