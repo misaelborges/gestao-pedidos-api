@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProdutoService {
 
@@ -33,5 +35,12 @@ public class ProdutoService {
     public ProdutoResponseDTO buscarProdutoPorId(Long id) {
         Produto produto = buscarProduto(id);
         return produtoMapper.toProdutoResponseDTO(produto);
+    }
+
+    public ProdutoResponseDTO salvarProduto(ProdutoRequestDTO produtoRequestDTO) {
+        Produto produto = produtoMapper.toProduto(produtoRequestDTO);
+        produto.setAtivo(true);
+        Produto produtoSalvo = produtoRepository.save(produto);
+        return produtoMapper.toProdutoResponseDTO(produtoSalvo);
     }
 }
