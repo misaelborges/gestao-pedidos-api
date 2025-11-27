@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,5 +43,14 @@ public class ProdutoService {
         produto.setAtivo(true);
         Produto produtoSalvo = produtoRepository.save(produto);
         return produtoMapper.toProdutoResponseDTO(produtoSalvo);
+    }
+
+    @Transactional
+    public ProdutoResponseDTO atualizarProdutoPorId(Long id, ProdutoAtualizaRequestDTO produtoAtualizaRequestDTO) {
+        Produto produtoBanco = buscarProduto(id);
+
+        atualizarProduto(produtoAtualizaRequestDTO, produtoBanco);
+
+        return produtoMapper.toProdutoResponseDTO(produtoBanco);
     }
 }
