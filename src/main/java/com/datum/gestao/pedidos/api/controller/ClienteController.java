@@ -1,5 +1,6 @@
 package com.datum.gestao.pedidos.api.controller;
 
+import com.datum.gestao.pedidos.api.assembler.ClienteAssembler;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteAtualizaRequestDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteRequestDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResponseDTO;
@@ -8,6 +9,8 @@ import com.datum.gestao.pedidos.domain.service.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,35 +20,41 @@ import org.springframework.web.bind.annotation.*;
 public class ClienteController {
 
     private final ClienteService clienteService;
+    private final ClienteAssembler clienteAssembler;
 
-    public ClienteController(ClienteService clienteService) {
+    public ClienteController(ClienteService clienteService, ClienteAssembler clienteAssembler) {
         this.clienteService = clienteService;
+        this.clienteAssembler = clienteAssembler;
     }
 
     @GetMapping
-    public ResponseEntity<Page<ClienteResumoResponseDTO>> listarClientes(Pageable pageable) {
+    public ResponseEntity<PagedModel<EntityModel<ClienteResumoResponseDTO>>> listarClientes(Pageable pageable) {
         Page<ClienteResumoResponseDTO> clientePage = clienteService.listarClientes(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(clientePage);
+        PagedModel<EntityModel<ClienteResumoResponseDTO>> clienteResumoDTO = clienteAssembler.toClienteResumoDTO(clientePage);
+        return ResponseEntity.status(HttpStatus.OK).body(clienteResumoDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> buscarClientePorId(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<ClienteResponseDTO>> buscarClientePorId(@PathVariable Long id) {
         ClienteResponseDTO clienteResponseDTO = clienteService.buscarClientePorId(id);
-        return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);
+        EntityModel<ClienteResponseDTO> clienteComLink = clienteAssembler.toClienteResponseDTO(clienteResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(clienteComLink);
     }
 
     @PostMapping
-    public ResponseEntity<ClienteResponseDTO> salvarCliente(@RequestBody @Valid ClienteRequestDTO clienteRequestDTO) {
+    public ResponseEntity<EntityModel<ClienteResponseDTO>> salvarCliente(@RequestBody @Valid ClienteRequestDTO clienteRequestDTO) {
         ClienteResponseDTO clienteResponseDTO = clienteService.salvarCliente(clienteRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(clienteResponseDTO);
+        EntityModel<ClienteResponseDTO> clienteComLink = clienteAssembler.toClienteResponseDTO(clienteResponseDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteComLink);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteResponseDTO> atualizarClientePorId(
+    public ResponseEntity<EntityModel<ClienteResponseDTO>> atualizarClientePorId(
                        @PathVariable Long id, @RequestBody @Valid ClienteAtualizaRequestDTO clienteAtualizaRequestDTO) {
 
         ClienteResponseDTO clienteResponseDTO = clienteService.atualizarClientePorId(id, clienteAtualizaRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(clienteResponseDTO);
+        EntityModel<ClienteResponseDTO> clienteComLink = clienteAssembler.toClienteResponseDTO(clienteResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(clienteComLink);
     }
 
     @DeleteMapping("/{id}")
