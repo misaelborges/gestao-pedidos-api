@@ -5,7 +5,6 @@ import com.datum.gestao.pedidos.api.dto.produto.ProdutoAtualizaRequestDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoRequestDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResponseDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResumoResponseDTO;
-import com.datum.gestao.pedidos.domain.model.Produto;
 import com.datum.gestao.pedidos.domain.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -14,7 +13,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -57,5 +55,11 @@ public class ProdutoController {
         ProdutoResponseDTO produtoResponseDTO = produtoService.atualizarProdutoPorId(id, produtoAtualizaRequestDTO);
         EntityModel<ProdutoResponseDTO> protudoResponseDTO = produtoAssembler.toProtudoResponseDTO(produtoResponseDTO);
         return ResponseEntity.status(HttpStatus.OK).body(protudoResponseDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarProtudoPorId(@PathVariable Long id) {
+        produtoService.deletarProtudoPorId(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
