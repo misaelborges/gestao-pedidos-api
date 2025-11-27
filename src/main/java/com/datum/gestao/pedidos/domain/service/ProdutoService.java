@@ -59,4 +59,16 @@ public class ProdutoService {
         Produto produto = buscarProduto(id);
         produto.setAtivo(false);
     }
+
+    private void atualizarProduto(ProdutoAtualizaRequestDTO produtoAtualizaRequestDTO, Produto produto) {
+        produto.setNome(produtoAtualizaRequestDTO.nome());
+        produto.setDescricao(produtoAtualizaRequestDTO.descricao());
+        produto.setPreco(produtoAtualizaRequestDTO.preco());
+        produto.setEstoqueDisponivel(produtoAtualizaRequestDTO.estoqueDisponivel());
+        produto.setCategoria(produtoAtualizaRequestDTO.categoria());
+    }
+
+    private Produto buscarProduto(Long id) {
+        return produtoRepository.findById(id).orElseThrow(() -> new ProdutoNaoEncontradoException(id));
+    }
 }
