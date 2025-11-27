@@ -60,6 +60,6 @@ public class ClienteController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarClientePorId(@PathVariable Long id) {
         clienteService.deletarClientePorId(id);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
