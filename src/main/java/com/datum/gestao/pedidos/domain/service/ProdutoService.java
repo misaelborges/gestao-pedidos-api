@@ -1,5 +1,6 @@
 package com.datum.gestao.pedidos.domain.service;
 
+import com.datum.gestao.pedidos.api.dto.filtro.ProdutoFiltro;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoAtualizaRequestDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoRequestDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResponseDTO;
@@ -8,9 +9,11 @@ import com.datum.gestao.pedidos.core.mapper.ProdutoMapper;
 import com.datum.gestao.pedidos.domain.exception.ProdutoNaoEncontradoException;
 import com.datum.gestao.pedidos.domain.model.Produto;
 import com.datum.gestao.pedidos.domain.repository.ProdutoRepository;
+import com.datum.gestao.pedidos.domain.specification.ProdutoSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,15 +30,39 @@ public class ProdutoService {
         this.produtoMapper = produtoMapper;
     }
 
-    public Page<ProdutoResumoResponseDTO> listarProdutos(Pageable pageable) {
-        Page<Produto> produtoPage = produtoRepository.findAllProdutoByAtivoTrue(pageable);
-        List<ProdutoResumoResponseDTO> dtos = produtoMapper.toProdutoResumoDTO(produtoPage.getContent());
-        return new PageImpl<>(dtos, pageable, produtoPage.getTotalElements());
-    }
-
     public ProdutoResponseDTO buscarProdutoPorId(Long id) {
         Produto produto = buscarProduto(id);
         return produtoMapper.toProdutoResponseDTO(produto);
+    }
+
+    public ProdutoResponseDTO buscarProdutoSkuId(Long id, String sku) {
+        Specification<Produto> spec = Specification.allOf(
+                ProdutoSpecification.comId(id),
+                ProdutoSpecification.comSku(sku)
+        );
+
+        Produto produto = produtoRepository.findOne(spec)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException(
+                        "Produto não encontrado" +
+                                (id != null ? " com ID: " + id : "") +
+                                (sku != null ? " com SKU: " + sku : "")
+                ));
+
+        return produtoMapper.toProdutoResponseDTO(produto);
+    }
+
+    public Page<ProdutoResumoResponseDTO> buscarComFiltros(ProdutoFiltro filtro, Pageable pageable) {
+        Specification<Produto> spec = Specification.allOf(
+                ProdutoSpecification.ativoTrue(),
+                ProdutoSpecification.comCategoria(filtro.categoria()),
+                ProdutoSpecification.nomeContem(filtro.nome()),
+                ProdutoSpecification.precoEntre(filtro.precoMin(), filtro.precoMax())
+        );
+
+        Page<Produto> produtoPage = produtoRepository.findAll(spec, pageable);
+
+        List<ProdutoResumoResponseDTO> dtos = produtoMapper.toProdutoResumoDTO(produtoPage.getContent());
+        return new PageImpl<>(dtos, pageable, produtoPage.getTotalElements());
     }
 
     public ProdutoResponseDTO salvarProduto(ProdutoRequestDTO produtoRequestDTO) {
