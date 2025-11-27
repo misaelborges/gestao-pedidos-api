@@ -53,4 +53,10 @@ public class ProdutoService {
 
         return produtoMapper.toProdutoResponseDTO(produtoBanco);
     }
+
+    @Transactional
+    public void deletarProtudoPorId(Long id) {
+        Produto produto = buscarProduto(id);
+        produto.setAtivo(false);
+    }
 }
