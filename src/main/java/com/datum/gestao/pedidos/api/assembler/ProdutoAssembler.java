@@ -1,6 +1,7 @@
 package com.datum.gestao.pedidos.api.assembler;
 
 import com.datum.gestao.pedidos.api.controller.ProdutoController;
+import com.datum.gestao.pedidos.api.dto.filtro.ProdutoFiltro;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResponseDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResumoResponseDTO;
 import org.springframework.data.domain.Page;
@@ -16,13 +17,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class ProdutoAssembler {
 
-    public EntityModel<ProdutoResponseDTO> toProtudoResponseDTO(ProdutoResponseDTO produtoResponseDTO) {
+    public EntityModel<ProdutoResponseDTO> toProdutoResponseDTO(ProdutoResponseDTO produtoResponseDTO) {
         return EntityModel.of(produtoResponseDTO)
                 .add(linkTo(methodOn(ProdutoController.class)
                         .buscarProdutoPorId(produtoResponseDTO.id())).withSelfRel());
     }
 
-    public PagedModel<EntityModel<ProdutoResumoResponseDTO>> toProdutoResumoDTO(Page<ProdutoResumoResponseDTO> dtoList) {
+    public PagedModel<EntityModel<ProdutoResumoResponseDTO>> toProdutoResumoDTO(Page<ProdutoResumoResponseDTO> dtoList,
+                                                                                ProdutoFiltro filtro) {
         List<EntityModel<ProdutoResumoResponseDTO>> produtosComLink = dtoList.stream()
                 .map(dto ->
                         EntityModel.of(dto).add(linkTo(methodOn(ProdutoController.class)
@@ -40,7 +42,13 @@ public class ProdutoAssembler {
                 PagedModel.of(produtosComLink, pageMetadata);
 
         pagedModel.add(linkTo(methodOn(ProdutoController.class)
-                .listarProdutos(dtoList.getPageable())).withSelfRel());
+                .listarProdutos(
+                        filtro.nome(),
+                        filtro.categoria(),
+                        filtro.precoMin(),
+                        filtro.precoMax(),
+                        dtoList.getPageable()))
+                .withSelfRel());
 
         return pagedModel;
     }
