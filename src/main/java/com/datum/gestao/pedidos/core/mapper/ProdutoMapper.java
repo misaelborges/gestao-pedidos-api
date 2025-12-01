@@ -12,6 +12,7 @@ import java.util.List;
 public interface ProdutoMapper {
 
     Produto toProduto(ProdutoRequestDTO produtoRequest);
+    Produto toProduto(ProdutoResponseDTO produtoResponseDTO);
     List<ProdutoResumoResponseDTO> toProdutoResumoDTO(List<Produto> produtos);
     ProdutoResponseDTO toProdutoResponseDTO(Produto produto);
 }
