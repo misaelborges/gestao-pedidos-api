@@ -24,7 +24,7 @@ public class Pedido {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "status")
     @Enumerated(EnumType.STRING)
     private StatusPedido statusPedido;
 
