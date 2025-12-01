@@ -87,6 +87,12 @@ public class ProdutoService {
         produto.setAtivo(false);
     }
 
+    @Transactional
+    public void baixarEstoque(Long produtoid, int quantidade) {
+        Produto produto = buscarProduto(produtoid);
+        produto.setEstoqueDisponivel(produto.getEstoqueDisponivel() - quantidade);
+    }
+
     private void atualizarProduto(ProdutoAtualizaRequestDTO produtoAtualizaRequestDTO, Produto produto) {
         produto.setNome(produtoAtualizaRequestDTO.nome());
         produto.setDescricao(produtoAtualizaRequestDTO.descricao());
