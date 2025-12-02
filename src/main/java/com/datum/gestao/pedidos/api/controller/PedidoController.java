@@ -28,12 +28,12 @@ public class PedidoController {
     public ResponseEntity<PedidoResponseDTO> buscarPedido(@RequestParam(required = false) Long pedidoId,
                                                           @RequestParam(required = false) String numeroPedido) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedido(pedidoId, numeroPedido);
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PedidoResponseDTO> buscarPedidoId(@PathVariable Long id) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedidoId(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
     }
 }
