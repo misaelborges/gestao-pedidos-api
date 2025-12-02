@@ -32,8 +32,8 @@ values
 
 insert into pedido (id, numero_pedido, cliente_id, status, valor_total, observacoes)
 values
-(1, 'PED-0001', 1, 'CRIADO', 6689.90, 'Entrega rápida, por favor'),
-(2, 'PED-0002', 2, 'PAGO', 2120.00, null),
+(1, 'PED-0001', 1, 'AGUARDANDO_PAGAMENTO', 6689.90, 'Entrega rápida, por favor'),
+(2, 'PED-0002', 2, 'PAGAMENTO_CONFIRMADO', 2120.00, null),
 (3, 'PED-0003', 3, 'CANCELADO', 89.90, 'Cliente desistiu');
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, subtotal)
