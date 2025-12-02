@@ -24,8 +24,10 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponseDTO);
     }
 
-    @GetMapping("/teste")
-    public String teste() {
-        return "ok";
+    @GetMapping("/buscar")
+    public ResponseEntity<PedidoResponseDTO> buscarPedido(@RequestParam(required = false) Long pedidoId,
+                                                          @RequestParam(required = false) String numeroPedido) {
+        PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedido(pedidoId, numeroPedido);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponseDTO);
     }
 }
