@@ -30,4 +30,10 @@ public class PedidoController {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedido(pedidoId, numeroPedido);
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponseDTO);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PedidoResponseDTO> buscarPedidoId(@PathVariable Long id) {
+        PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedidoId(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponseDTO);
+    }
 }
