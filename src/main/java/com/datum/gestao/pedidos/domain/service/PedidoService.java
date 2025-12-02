@@ -148,7 +148,6 @@ public class PedidoService {
 
     public Page<PedidoResumoResponseDTO> buscarComFiltros(PedidoFiltro filtro, Pageable pageable) {
         Specification<Pedido> spec = Specification.allOf(
-                PedidoEspecification.nomeContem(filtro.nome()),
                 PedidoEspecification.comStatus(filtro.status()),
                 PedidoEspecification.comCliente(filtro.cliente()),
                 PedidoEspecification.comData(filtro.data())
