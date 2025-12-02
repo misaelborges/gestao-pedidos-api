@@ -22,24 +22,16 @@ public class PedidoEspecification {
                         );
     }
 
-    public static Specification<Pedido> nomeContem(String nome) {
-        return (root, query, cb) ->
-                nome == null ? null :
-                        cb.like(
-                                cb.lower(root.get("cliente").get("nome")),
-                                "%" + nome.toLowerCase() + "%"
-                        );
-    }
-
 
     public static Specification<Pedido> comStatus(String status) {
         return (root, query, cb) ->
                 status == null ? null :
                         cb.equal(
-                                root.get("status"),
-                                StatusPedido.valueOf(status)
+                                root.get("statusPedido"),
+                                StatusPedido.valueOf(status.toUpperCase())
                         );
     }
+
 
 
     public static Specification<Pedido> comCliente(String cliente) {
@@ -55,6 +47,6 @@ public class PedidoEspecification {
     public static Specification<Pedido> comData(LocalDateTime data) {
         return (root, query, cb) ->
                 data == null ? null :
-                        cb.equal(root.get("data"), data);
+                        cb.equal(root.get("dataPedido"), data);
     }
 }
