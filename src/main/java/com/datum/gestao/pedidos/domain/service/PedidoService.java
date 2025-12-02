@@ -133,6 +133,16 @@ public class PedidoService {
         return pedidoMapper.toPedidoResponseDTO(pedido);
     }
 
+    public PedidoResponseDTO buscarPedidoId(Long pedidoId) {
+
+        Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(
+                () -> new PedidoNaoEncontradoException(pedidoId));
+
+        return pedidoMapper.toPedidoResponseDTO(pedido);
+    }
+
+
+
     private String geradorNumeroPedido() {
         String data = LocalDate.now().toString();
         String dataSemPonto = data.replace("-", "");
