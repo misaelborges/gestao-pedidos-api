@@ -1,9 +1,11 @@
 package com.datum.gestao.pedidos.domain.service;
 
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResponseDTO;
+import com.datum.gestao.pedidos.api.dto.filtro.PedidoFiltro;
 import com.datum.gestao.pedidos.api.dto.itemPedido.ItemValidadoDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoRequestDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoResponseDTO;
+import com.datum.gestao.pedidos.api.dto.pedido.PedidoResumoResponseDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResponseDTO;
 import com.datum.gestao.pedidos.core.mapper.ClienteMapper;
 import com.datum.gestao.pedidos.core.mapper.PedidoMapper;
@@ -16,6 +18,9 @@ import com.datum.gestao.pedidos.domain.model.Pedido;
 import com.datum.gestao.pedidos.domain.model.StatusPedido;
 import com.datum.gestao.pedidos.domain.repository.PedidoRepository;
 import com.datum.gestao.pedidos.domain.specification.PedidoEspecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,7 +146,19 @@ public class PedidoService {
         return pedidoMapper.toPedidoResponseDTO(pedido);
     }
 
+    public Page<PedidoResumoResponseDTO> buscarComFiltros(PedidoFiltro filtro, Pageable pageable) {
+        Specification<Pedido> spec = Specification.allOf(
+                PedidoEspecification.nomeContem(filtro.nome()),
+                PedidoEspecification.comStatus(filtro.status()),
+                PedidoEspecification.comCliente(filtro.cliente()),
+                PedidoEspecification.comData(filtro.data())
+        );
 
+        Page<Pedido> pedidoPage = pedidoRepository.findAll(spec, pageable);
+
+        List<PedidoResumoResponseDTO> dtos = pedidoMapper.toPedidoResumoDTO(pedidoPage.getContent());
+        return new PageImpl<>(dtos, pageable, pedidoPage.getTotalElements());
+    }
 
     private String geradorNumeroPedido() {
         String data = LocalDate.now().toString();
