@@ -8,12 +8,15 @@ import com.datum.gestao.pedidos.api.dto.produto.ProdutoResponseDTO;
 import com.datum.gestao.pedidos.core.mapper.ClienteMapper;
 import com.datum.gestao.pedidos.core.mapper.PedidoMapper;
 import com.datum.gestao.pedidos.core.mapper.ProdutoMapper;
+import com.datum.gestao.pedidos.domain.exception.PedidoNaoEncontradoException;
 import com.datum.gestao.pedidos.domain.exception.ProdutoEmFaltaNoEstoqueException;
 import com.datum.gestao.pedidos.domain.exception.QuantidadeProdutoInvalidoException;
 import com.datum.gestao.pedidos.domain.model.ItemPedido;
 import com.datum.gestao.pedidos.domain.model.Pedido;
 import com.datum.gestao.pedidos.domain.model.StatusPedido;
 import com.datum.gestao.pedidos.domain.repository.PedidoRepository;
+import com.datum.gestao.pedidos.domain.specification.PedidoEspecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +24,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class PedidoService {
@@ -34,7 +36,7 @@ public class PedidoService {
     private final ClienteService clienteService;
 
     public PedidoService(PedidoRepository pedidoRepository, ClienteMapper clienteMapper, PedidoMapper pedidoMapper,
-                            ProdutoMapper produtoMapper, ProdutoService produtoService, ClienteService clienteService) {
+                         ProdutoMapper produtoMapper, ProdutoService produtoService, ClienteService clienteService) {
         this.pedidoRepository = pedidoRepository;
         this.clienteMapper = clienteMapper;
         this.pedidoMapper = pedidoMapper;
@@ -115,11 +117,26 @@ public class PedidoService {
         return pedidoMapper.toPedidoResponseDTO(pedidoSalvo);
     }
 
+    public PedidoResponseDTO buscarPedido(Long pedidoId, String numeroPedido) {
+        Specification<Pedido> spec = Specification.allOf(
+                PedidoEspecification.comId(pedidoId),
+                PedidoEspecification.comNumeroPedido(numeroPedido)
+        );
+
+        Pedido pedido = pedidoRepository.findOne(spec)
+                .orElseThrow(() -> new PedidoNaoEncontradoException(
+                        "Produto não encontrado" +
+                                (pedidoId != null ? " com ID: " + pedidoId : "") +
+                                (numeroPedido != null ? " com SKU: " + numeroPedido : "")
+                ));
+
+        return pedidoMapper.toPedidoResponseDTO(pedido);
+    }
 
     private String geradorNumeroPedido() {
         String data = LocalDate.now().toString();
         String dataSemPonto = data.replace("-", "");
-        String uuid = UUID.randomUUID().toString().substring(0,8).toUpperCase();
+        String uuid = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         return "PED-".concat(dataSemPonto + uuid);
     }
 }
