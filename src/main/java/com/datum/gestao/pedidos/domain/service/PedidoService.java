@@ -122,7 +122,7 @@ public class PedidoService {
         return pedidoMapper.toPedidoResponseDTO(pedidoSalvo);
     }
 
-    public PedidoResponseDTO buscarPedido(Long pedidoId, String numeroPedido) {
+    public PedidoResponseDTO buscarPedidoIdNumeroPedido(Long pedidoId, String numeroPedido) {
         Specification<Pedido> spec = Specification.allOf(
                 PedidoEspecification.comId(pedidoId),
                 PedidoEspecification.comNumeroPedido(numeroPedido)
@@ -140,8 +140,7 @@ public class PedidoService {
 
     public PedidoResponseDTO buscarPedidoId(Long pedidoId) {
 
-        Pedido pedido = pedidoRepository.findById(pedidoId).orElseThrow(
-                () -> new PedidoNaoEncontradoException(pedidoId));
+        Pedido pedido = buscarPedido(pedidoId);
 
         return pedidoMapper.toPedidoResponseDTO(pedido);
     }
@@ -158,6 +157,12 @@ public class PedidoService {
         List<PedidoResumoResponseDTO> dtos = pedidoMapper.toPedidoResumoDTO(pedidoPage.getContent());
         return new PageImpl<>(dtos, pageable, pedidoPage.getTotalElements());
     }
+
+    private Pedido buscarPedido(Long pedidoId) {
+        return pedidoRepository.findById(pedidoId).orElseThrow(
+                () -> new PedidoNaoEncontradoException(pedidoId));
+    }
+
 
     private String geradorNumeroPedido() {
         String data = LocalDate.now().toString();
