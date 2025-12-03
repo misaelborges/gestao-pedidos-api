@@ -62,4 +62,10 @@ public class PedidoController {
         PagedModel<EntityModel<PedidoResumoResponseDTO>> produtoResumoDTO = pedidoAssembler.toProdutoResumoDTO(pedidoResumoResponseDTOS, filtro);
         return ResponseEntity.status(HttpStatus.OK).body(produtoResumoDTO);
     }
+
+    @PatchMapping("/{id}/avancar-status")
+    public ResponseEntity<PedidoResponseDTO> avancarStatus(@PathVariable Long id) {
+        PedidoResponseDTO pedidoResponseDTO = pedidoService.avancarStatusPedido(id);
+        return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
+    }
 }
