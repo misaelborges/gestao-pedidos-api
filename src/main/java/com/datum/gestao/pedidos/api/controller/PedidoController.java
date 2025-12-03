@@ -39,7 +39,7 @@ public class PedidoController {
     @GetMapping("/buscar")
     public ResponseEntity<EntityModel<PedidoResponseDTO>> buscarPedido(@RequestParam(required = false) Long pedidoId,
                                                           @RequestParam(required = false) String numeroPedido) {
-        PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedido(pedidoId, numeroPedido);
+        PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedidoIdNumeroPedido(pedidoId, numeroPedido);
         EntityModel<PedidoResponseDTO> pageResponseDTO = pedidoAssembler.toPedidoResponseDTO(pedidoResponseDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(pageResponseDTO);
     }
