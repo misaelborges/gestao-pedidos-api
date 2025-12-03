@@ -10,9 +10,7 @@ import com.datum.gestao.pedidos.api.dto.produto.ProdutoResponseDTO;
 import com.datum.gestao.pedidos.core.mapper.ClienteMapper;
 import com.datum.gestao.pedidos.core.mapper.PedidoMapper;
 import com.datum.gestao.pedidos.core.mapper.ProdutoMapper;
-import com.datum.gestao.pedidos.domain.exception.PedidoNaoEncontradoException;
-import com.datum.gestao.pedidos.domain.exception.ProdutoEmFaltaNoEstoqueException;
-import com.datum.gestao.pedidos.domain.exception.QuantidadeProdutoInvalidoException;
+import com.datum.gestao.pedidos.domain.exception.*;
 import com.datum.gestao.pedidos.domain.model.ItemPedido;
 import com.datum.gestao.pedidos.domain.model.Pedido;
 import com.datum.gestao.pedidos.domain.model.StatusPedido;
@@ -159,7 +157,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public PedidoResponseDTO avancarStatusPedido(Long id) {
+    public PedidoResponseDTO atualizarPedido(Long id) {
         Pedido pedido = buscarPedido(id);
         if (pedido.getStatusPedido().equals(StatusPedido.AGUARDANDO_PAGAMENTO)) {
             pedido.setStatusPedido(StatusPedido.PAGAMENTO_CONFIRMADO);
@@ -170,6 +168,20 @@ public class PedidoService {
         } else if(pedido.getStatusPedido().equals(StatusPedido.ENTREGUE)) {
             pedido.setStatusPedido(StatusPedido.EM_TRANSPORTE);
         }
+
+        return pedidoMapper.toPedidoResponseDTO(pedido);
+    }
+
+    @Transactional
+    public PedidoResponseDTO atualizarPedido(Long id, String status) {
+        Pedido pedido = buscarPedido(id);
+        StatusPedido statusEnum;
+        try {
+            statusEnum = StatusPedido.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new StatusInvalidoException(status);
+        }
+        pedido.setStatusPedido(StatusPedido.valueOf(status));
 
         return pedidoMapper.toPedidoResponseDTO(pedido);
     }
