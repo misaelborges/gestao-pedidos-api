@@ -158,6 +158,22 @@ public class PedidoService {
         return new PageImpl<>(dtos, pageable, pedidoPage.getTotalElements());
     }
 
+    @Transactional
+    public PedidoResponseDTO avancarStatusPedido(Long id) {
+        Pedido pedido = buscarPedido(id);
+        if (pedido.getStatusPedido().equals(StatusPedido.AGUARDANDO_PAGAMENTO)) {
+            pedido.setStatusPedido(StatusPedido.PAGAMENTO_CONFIRMADO);
+        } else if(pedido.getStatusPedido().equals(StatusPedido.PAGAMENTO_CONFIRMADO)) {
+            pedido.setStatusPedido(StatusPedido.EM_SEPARACAO);
+        } else if(pedido.getStatusPedido().equals(StatusPedido.EM_SEPARACAO)) {
+            pedido.setStatusPedido(StatusPedido.EM_TRANSPORTE);
+        } else if(pedido.getStatusPedido().equals(StatusPedido.ENTREGUE)) {
+            pedido.setStatusPedido(StatusPedido.EM_TRANSPORTE);
+        }
+
+        return pedidoMapper.toPedidoResponseDTO(pedido);
+    }
+
     private Pedido buscarPedido(Long pedidoId) {
         return pedidoRepository.findById(pedidoId).orElseThrow(
                 () -> new PedidoNaoEncontradoException(pedidoId));
