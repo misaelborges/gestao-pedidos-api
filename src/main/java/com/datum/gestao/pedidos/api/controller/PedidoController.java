@@ -2,6 +2,7 @@ package com.datum.gestao.pedidos.api.controller;
 
 import com.datum.gestao.pedidos.api.assembler.PedidoAssembler;
 import com.datum.gestao.pedidos.api.dto.filtro.PedidoFiltro;
+import com.datum.gestao.pedidos.api.dto.pedido.AtualizarStatusRequestDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoRequestDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoResponseDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoResumoResponseDTO;
@@ -65,7 +66,13 @@ public class PedidoController {
 
     @PatchMapping("/{id}/avancar-status")
     public ResponseEntity<PedidoResponseDTO> avancarStatus(@PathVariable Long id) {
-        PedidoResponseDTO pedidoResponseDTO = pedidoService.avancarStatusPedido(id);
+        PedidoResponseDTO pedidoResponseDTO = pedidoService.atualizarPedido(id);
+        return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<PedidoResponseDTO> avancarStatusPedido(@PathVariable Long id, @RequestBody AtualizarStatusRequestDTO  request) {
+        PedidoResponseDTO pedidoResponseDTO = pedidoService.atualizarPedido(id, request.status());
         return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
     }
 }
