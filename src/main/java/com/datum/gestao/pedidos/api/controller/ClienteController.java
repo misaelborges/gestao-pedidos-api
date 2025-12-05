@@ -5,6 +5,7 @@ import com.datum.gestao.pedidos.api.dto.cliente.ClienteAtualizaRequestDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteRequestDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResponseDTO;
 import com.datum.gestao.pedidos.api.dto.cliente.ClienteResumoResponseDTO;
+import com.datum.gestao.pedidos.api.interfaces.ClienteControllerOpenApi;
 import com.datum.gestao.pedidos.domain.service.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/clientes")
-public class ClienteController {
+public class ClienteController implements ClienteControllerOpenApi {
 
     private final ClienteService clienteService;
     private final ClienteAssembler clienteAssembler;
@@ -27,6 +28,7 @@ public class ClienteController {
         this.clienteAssembler = clienteAssembler;
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<ClienteResumoResponseDTO>>> listarClientes(Pageable pageable) {
         Page<ClienteResumoResponseDTO> clientePage = clienteService.listarClientes(pageable);
@@ -34,6 +36,7 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.OK).body(clienteResumoDTO);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<ClienteResponseDTO>> buscarClientePorId(@PathVariable Long id) {
         ClienteResponseDTO clienteResponseDTO = clienteService.buscarClientePorId(id);
@@ -41,6 +44,7 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.OK).body(clienteComLink);
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<EntityModel<ClienteResponseDTO>> salvarCliente(@RequestBody @Valid ClienteRequestDTO clienteRequestDTO) {
         ClienteResponseDTO clienteResponseDTO = clienteService.salvarCliente(clienteRequestDTO);
@@ -48,6 +52,7 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteComLink);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<ClienteResponseDTO>> atualizarClientePorId(
                        @PathVariable Long id, @RequestBody @Valid ClienteAtualizaRequestDTO clienteAtualizaRequestDTO) {
@@ -57,6 +62,7 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.OK).body(clienteComLink);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarClientePorId(@PathVariable Long id) {
         clienteService.deletarClientePorId(id);
