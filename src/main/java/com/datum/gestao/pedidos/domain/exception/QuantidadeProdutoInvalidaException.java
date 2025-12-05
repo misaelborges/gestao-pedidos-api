@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class QuantidadeProdutoInvalidoException extends NegocioException {
+public class QuantidadeProdutoInvalidaException extends NegocioException {
 
-    public QuantidadeProdutoInvalidoException(String mensagem) {
+    public QuantidadeProdutoInvalidaException(String mensagem) {
         super(mensagem);
     }
 
-    public QuantidadeProdutoInvalidoException() {
+    public QuantidadeProdutoInvalidaException() {
         this("Valor para um pedido deve ser positívo");
     }
 
