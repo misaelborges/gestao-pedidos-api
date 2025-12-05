@@ -75,4 +75,10 @@ public class PedidoController {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.atualizarPedido(id, request.status());
         return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
     }
+
+    @DeleteMapping("/{id}/cancelar-pedido")
+    public ResponseEntity<?> cancelarPedido(@PathVariable Long id) {
+        pedidoService.cancelarPedido(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
