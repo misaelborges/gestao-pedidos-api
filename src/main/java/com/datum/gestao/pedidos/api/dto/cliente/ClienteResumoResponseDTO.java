@@ -1,4 +1,13 @@
 package com.datum.gestao.pedidos.api.dto.cliente;
 
-public record ClienteResumoResponseDTO(Long id, String nome, String email, String telefone, String estado, String cidade ) {
-}
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "ClienteResumoResponseDTO", description = "Resumo do cliente")
+public record ClienteResumoResponseDTO(
+        @Schema(example = "1") Long id,
+        @Schema(example = "Maria Silva") String nome,
+        @Schema(example = "misael.borges@email.com") String email,
+        @Schema(example = "11988887777") String telefone,
+        @Schema(example = "SP") String estado,
+        @Schema(example = "São Paulo") String cidade
+) {}
