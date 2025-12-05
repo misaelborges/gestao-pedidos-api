@@ -6,6 +6,7 @@ import com.datum.gestao.pedidos.api.dto.pedido.AtualizarStatusRequestDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoRequestDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoResponseDTO;
 import com.datum.gestao.pedidos.api.dto.pedido.PedidoResumoResponseDTO;
+import com.datum.gestao.pedidos.api.interfaces.PedidoControllerOpenApi;
 import com.datum.gestao.pedidos.domain.service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/pedidos")
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 
     private final PedidoService pedidoService;
     private final PedidoAssembler pedidoAssembler;
@@ -30,6 +31,7 @@ public class PedidoController {
         this.pedidoAssembler = pedidoAssembler;
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<EntityModel<PedidoResponseDTO>> criarPedido(@RequestBody @Valid PedidoRequestDTO pedidoRequestDTO) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.criarPedido(pedidoRequestDTO);
@@ -37,6 +39,8 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoResponseDTO1);
     }
 
+
+    @Override
     @GetMapping("/buscar")
     public ResponseEntity<EntityModel<PedidoResponseDTO>> buscarPedido(@RequestParam(required = false) Long pedidoId,
                                                           @RequestParam(required = false) String numeroPedido) {
@@ -45,6 +49,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.OK).body(pageResponseDTO);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<PedidoResponseDTO>> buscarPedidoId(@PathVariable Long id) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedidoId(id);
@@ -52,6 +57,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.OK).body(pageResponseDTO);
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<PedidoResumoResponseDTO>>> buscarComFiltros(
             @RequestParam(required = false) String status,
@@ -64,18 +70,21 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtoResumoDTO);
     }
 
+    @Override
     @PatchMapping("/{id}/avancar-status")
     public ResponseEntity<PedidoResponseDTO> avancarStatus(@PathVariable Long id) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.atualizarPedido(id);
         return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
     }
 
+    @Override
     @PatchMapping("/{id}/status")
     public ResponseEntity<PedidoResponseDTO> avancarStatusPedido(@PathVariable Long id, @RequestBody AtualizarStatusRequestDTO  request) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.atualizarPedido(id, request.status());
         return ResponseEntity.status(HttpStatus.OK).body(pedidoResponseDTO);
     }
 
+    @Override
     @DeleteMapping("/{id}/cancelar-pedido")
     public ResponseEntity<?> cancelarPedido(@PathVariable Long id) {
         pedidoService.cancelarPedido(id);
