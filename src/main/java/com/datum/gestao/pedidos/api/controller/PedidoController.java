@@ -42,14 +42,14 @@ public class PedidoController {
                                                           @RequestParam(required = false) String numeroPedido) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedidoIdNumeroPedido(pedidoId, numeroPedido);
         EntityModel<PedidoResponseDTO> pageResponseDTO = pedidoAssembler.toPedidoResponseDTO(pedidoResponseDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(pageResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(pageResponseDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<PedidoResponseDTO>> buscarPedidoId(@PathVariable Long id) {
         PedidoResponseDTO pedidoResponseDTO = pedidoService.buscarPedidoId(id);
         EntityModel<PedidoResponseDTO> pageResponseDTO = pedidoAssembler.toPedidoResponseDTO(pedidoResponseDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(pageResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(pageResponseDTO);
     }
 
     @GetMapping
