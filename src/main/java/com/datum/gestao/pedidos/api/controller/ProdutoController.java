@@ -6,6 +6,7 @@ import com.datum.gestao.pedidos.api.dto.produto.ProdutoAtualizaRequestDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoRequestDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResponseDTO;
 import com.datum.gestao.pedidos.api.dto.produto.ProdutoResumoResponseDTO;
+import com.datum.gestao.pedidos.api.interfaces.ProdutoControllerOpenApi;
 import com.datum.gestao.pedidos.domain.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/produtos")
-public class ProdutoController {
+public class ProdutoController implements ProdutoControllerOpenApi {
 
     private final ProdutoService produtoService;
     private final ProdutoAssembler produtoAssembler;
@@ -30,6 +31,7 @@ public class ProdutoController {
         this.produtoAssembler = produtoAssembler;
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<ProdutoResponseDTO>> buscarProdutoPorId(@PathVariable Long id) {
         ProdutoResponseDTO produtoResponseDTO = produtoService.buscarProdutoPorId(id);
@@ -46,6 +48,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(dtoEntityModel);
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<ProdutoResumoResponseDTO>>> listarProdutos(
             @RequestParam(required = false) String nome, @RequestParam(required = false) String categoria,
@@ -59,6 +62,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(produtoResumoDTO);
     }
 
+    @Override
     @PostMapping
     public ResponseEntity<EntityModel<ProdutoResponseDTO>> salvarProduto(@RequestBody @Valid ProdutoRequestDTO produtoRequestDTO) {
         ProdutoResponseDTO produtoResponseDTO = produtoService.salvarProduto(produtoRequestDTO);
@@ -66,6 +70,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(protudoResponseDTO);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<ProdutoResponseDTO>> atualizarProdutoPorId(@PathVariable Long id,
                                               @RequestBody @Valid ProdutoAtualizaRequestDTO produtoAtualizaRequestDTO) {
@@ -75,6 +80,7 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.OK).body(protudoResponseDTO);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarProtudoPorId(@PathVariable Long id) {
         produtoService.deletarProtudoPorId(id);
