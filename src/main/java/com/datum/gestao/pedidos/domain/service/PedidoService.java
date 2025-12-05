@@ -66,7 +66,7 @@ public class PedidoService {
                 .map(item -> {
                     ProdutoResponseDTO produtoResponseDTO = produtoService.buscarProdutoPorId(item.produtoId());
                     if (item.quantidade() <= 0) {
-                        throw new QuantidadeProdutoInvalidoException();
+                        throw new QuantidadeProdutoInvalidaException();
                     }
 
                     if (produtoResponseDTO.estoqueDisponivel() < item.quantidade()) {
