@@ -186,6 +186,12 @@ public class PedidoService {
         return pedidoMapper.toPedidoResponseDTO(pedido);
     }
 
+    @Transactional
+    public void cancelarPedido(Long id) {
+        Pedido pedido = buscarPedido(id);
+        pedido.setStatusPedido(StatusPedido.CANCELADO);
+    }
+
     private Pedido buscarPedido(Long pedidoId) {
         return pedidoRepository.findById(pedidoId).orElseThrow(
                 () -> new PedidoNaoEncontradoException(pedidoId));
